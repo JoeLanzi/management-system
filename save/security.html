@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta charset="utf-8">
+    <title>Security Page</title>
+    <meta http-equiv="refresh" content="120" >
+    <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython.min.js"> </script> 
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython_stdlib.js"> </script>
+    
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body onload="brython()"> 
+    <div class="container">
+        <div class="navigation">
+            <div class="left_nav">
+                    <div class="brand" style="font-family:Courier; font-weight: bold;">
+                        <div>Security Page</div>
+                    </div>
+                </div>
+                <div class="right_nav" style="font-family:Courier; font-weight: bold;">
+                    <div class="wrapper">
+                        <a href="index.html">Home</a>
+                    </div>
+                    <div class="wrapper">
+                        <a href="about.html">About</a>
+                    </div>
+                    <div class="wrapper">
+                        <a href="login.html">Login</a>
+                    </div>
+                </div>
+        </div>
+    </div>
+    
+    <div class='sec-info' style='font-family:Courier; font-weight: bolder;' >
+        <div>Current Occupancy: <span id="num"></span>
+            
+            <script type="text/python" id="script2">
+                from browser import document
+                import csv
+                with open('occupancy.csv') as csvDataFile:
+                    document['num'].text = [row for row in csv.reader(csvDataFile)] [1][3]
+            </script> 
+        </div>
+        
+        <div class="max2">
+            <div>Maximum Occupancy: 70</div>
+            <div>
+                Updated: <span id="datetime"></span>
+                <script>
+                    var dt = new Date();
+                    document.getElementById("datetime").innerHTML = dt.toLocaleString();
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    <div class='security'>
+        <div class="table">
+            <div id="database">
+
+                <script>
+                    const clicked = id => {let images = document.getElementsByClassName('img');}
+
+                    var url = "database.csv";
+                    // CSV file using AJax JQuery
+                    $(document).ready(function(){
+                         
+                        $.ajax({
+                            url:url,
+                            dataType:"text",
+                            success:function(data){
+                                var security_data = data.split(/\r?\n|\r/);
+                                var table_data = '<table class="table table-bordered table-striped">';
+                                for(var count = 0; count<security_data.length; count++){
+                                    var cell_data = security_data[count].split(",");
+                                    table_data += '<tr>';
+
+                                    for(var cell_count = 0; cell_count < cell_data.length; cell_count++){
+                                        var value = cell_data[cell_count];
+
+                                        if(cell_count === 0){
+                                            table_data += '<td>'+value+'</td>';
+                                        }
+                                        else{       
+                                            if (cell_count === 6 && value !== 'Photo'){
+                                                let imageNode = `<img src="${value}" alt="photo of student" border=1 height=100 width=100>`
+                                                table_data += `<td>${imageNode}</td>`;
+                                            }
+                                            else{
+                                                table_data += `<td>${value}</td>`;
+                                            }
+                                        }
+                                    }
+                                    table_data += '</tr>';
+                                }
+                                table_data += '</table>';
+                                $('#database').html(table_data);
+                            }
+                        });
+                    }); 
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+
+</html>
